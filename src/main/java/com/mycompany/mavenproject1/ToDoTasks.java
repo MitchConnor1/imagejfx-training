@@ -21,17 +21,23 @@ import org.scijava.service.SciJavaService;
 public class ToDoTasks extends AbstractService implements TaskService {
 
     @Parameter
-    EventService eventService;
+    private EventService eventService;
 
-    List <Task> listOfTasks = new ArrayList <>();
+    private final List <Task> listOfTasks = new ArrayList <>();
     
+ 
+//    This method is called after a service has been injected with its dependancies.
+    @Override
+    public void initialize() {
+        addTask("Do something first");
+        addTask("Do something afterwards");
+}
     
     @Override
     public void addTask(String taskContent) {
-        Task toCarry = new Task (taskContent, false);
+        Task toCarry = new DefaultTask (taskContent, false);
        
         listOfTasks.add (toCarry);
-        System.out.println("HEYYYYYYYYYYYYY");
         eventService.publish (new TaskAddedEvent(toCarry));
 
     }

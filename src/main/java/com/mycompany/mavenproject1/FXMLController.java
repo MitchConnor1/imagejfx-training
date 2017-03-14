@@ -14,6 +14,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import org.scijava.event.EventHandler;
@@ -32,26 +33,65 @@ public class FXMLController extends BorderPane {
     @FXML
     ListView <Task> listView;
     
+    // The declaration of the Service   
     @Parameter
     TaskService task;
 
-
-
     public FXMLController() throws IOException{
-           
+        
         FXMLLoader loader = new FXMLLoader ();
         
         loader.setLocation(getClass().getResource("/fxml/Scene.fxml"));
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
-   
         
         //This will set a new cell factory to be used in the ListView. 
         //It forces the old ListCell to be thrown away, and new ListCell's created with the new cell factory.
         listView.setCellFactory(this::createCell);
+        
     }
     
+    
+
+//    Corresponds to a Callback<ListView<Task>, ListCell<Task>>
+    private ListCell <Task> createCell (ListView <Task> tasks){
+        return new TaskListCell();
+    }
+
+    
+    private static class TaskListCell extends ListCell <Task> {
+     
+        CheckBox checkbox;
+        
+        private TaskListCell(){
+            
+            super();
+            checkbox = new CheckBox();
+            this.itemProperty().addListener(this::notifyCell);
+        }
+
+        
+        private void notifyCell (Observable obs, Task oldValue, Task newValue){
+            
+            if (oldValue != null)
+                oldValue.selectedProperty().unbindBidirectional(checkbox.selectedProperty());
+            if (newValue == null)
+                this.setGraphic(null);
+            
+            
+            else{
+                this.setGraphic(checkbox);
+               checkbox.setSelected(newValue.isSelected());
+               //Create a bidirectional binding between two properties. 
+               newValue.selectedProperty().bindBidirectional(checkbox.selectedProperty());
+              checkbox.setText (newValue.getText());
+          }
+           
+        }
+
+       
+    }    
     
     @FXML
     private void close(){
@@ -62,7 +102,6 @@ public class FXMLController extends BorderPane {
     @FXML
     private void addCell (){
         if (newTask.getText() != null){
-//            listView.getItems().add(new Task (newTask.getText(), false));   
               task.addTask(newTask.getText());
               newTask.setText(null);
               
@@ -75,7 +114,10 @@ public class FXMLController extends BorderPane {
     
     @EventHandler
     public void onTaskAddedEvent (TaskAddedEvent event){
-        listView.getItems().add(event.getTaskAdded());
+        Platform.runLater( () ->
+                listView.getItems().add(event.getTaskAdded())
+                
+        );
     }
     
     @FXML   
@@ -85,45 +127,17 @@ public class FXMLController extends BorderPane {
     
     @FXML
     private void removeSelection(){
-        
         List <Task> toRemove = listView.getItems().stream()
                 .filter((t) -> t.isSelected())
                 .collect(Collectors.toList());
+
+//        toRemove.forEach((taskToRemove) -> {
+//            task.removeTask(taskToRemove);
+//        });
         listView.getItems().removeAll(toRemove);
     }
     
     
     
-    private ListCell <Task> createCell (ListView <Task> tasks){
-        return new TaskListCell();
-    }
     
-    private class TaskListCell extends ListCell <Task> {
-        
-        CheckBox checkbox = new CheckBox();
-        
-        public TaskListCell (){
-            
-            super();
-            this.itemProperty().addListener(this::notifyCell);
-        }
-        
-        private void notifyCell (Observable obs, Task oldValue, Task newValue){
-            
-            if (oldValue != null)
-                oldValue.selectedProperty().unbindBidirectional(checkbox.selectedProperty());
-            if (newValue == null)
-                this.setGraphic(null);
-            
-            
-            else{
-                this.setGraphic(checkbox);
-                checkbox.setSelected(newValue.isSelected());
-                //Create a bidirectional binding between two properties. 
-                newValue.selectedProperty().bindBidirectional(checkbox.selectedProperty());
-                checkbox.setText (newValue.getText());
-            }
-           
-        }
-    }
 }

@@ -6,40 +6,22 @@
 package com.mycompany.mavenproject1;
 
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.Property;
+
 /**
  *
  * @author julien
  */
-
-public class Task{
+public interface Task {
     
+    public String getText();
     
-    private String text;
-    private BooleanProperty selected = new SimpleBooleanProperty();
+    public void setText(String text);
 
-    public Task(String text, Boolean selected) {
-        this.text = text;
-        this.selected.setValue (selected);
-    }
+    public Boolean isSelected();
     
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Boolean isSelected() {
-        return selected.getValue();
-    }
-
-    public void setSelected(Boolean selected) {
-        this.selected.setValue(selected);
-    }
+    public void setSelected(Boolean selected);
     
-    public BooleanProperty selectedProperty(){
-        return selected;
-    }
+    public BooleanProperty selectedProperty();
+    
 }
