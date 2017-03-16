@@ -50,6 +50,8 @@ public class ToDoTasks extends AbstractService implements TaskService {
     @Override
     public void removeTask(Task task) {
         listOfTasks.remove (task);
+        
+        eventService.publish(new TaskDeletedEvent(task));
     }
-    
+
 }

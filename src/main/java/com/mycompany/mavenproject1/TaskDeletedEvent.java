@@ -5,22 +5,17 @@
  */
 package com.mycompany.mavenproject1;
 
-import java.util.List;
-import org.scijava.service.SciJavaService;
-
 /**
  *
  * @author julien
  */
-public interface TaskService extends SciJavaService {
- 
-    public void addTask(String taskContent); 
+public class TaskDeletedEvent extends TaskEvent {
 
-    public List<Task> getTaskList();
-
-    public void removeTask (Task task);
+    public TaskDeletedEvent(Task task) {
+        
+        super(task);
+    }
 
     
-  
+        
 }
-
