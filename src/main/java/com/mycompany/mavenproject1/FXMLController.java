@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -36,6 +37,10 @@ public class FXMLController extends BorderPane {
     @Parameter
     private TaskService task;
     
+    @Parameter 
+    private TaskPlugin taskPlugin;
+    
+    
     public FXMLController() throws IOException{
         
         FXMLLoader loader = new FXMLLoader ();
@@ -44,12 +49,12 @@ public class FXMLController extends BorderPane {
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
-        
+                
         //This will set a new cell factory to be used in the ListView.
         //It forces the old ListCell to be thrown away, and new ListCell's created with the new cell factory.
         
         listView.setCellFactory(this::createCell);
-        
+
     }
     
     
