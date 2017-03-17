@@ -16,7 +16,7 @@
    <bottom>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-          <Button mnemonicParsing="false" onAction="#selectAll" text="Select all the tasks at once" />
+          <Button fx:id="jeanMi" mnemonicParsing="false" onAction="#selectAll" text="Select all the tasks at once" />
             <Button mnemonicParsing="false" onAction="#removeSelection" text="Remove selected tasks" />
             <Button mnemonicParsing="false" onAction="#close" text="Close the application" />
         </items>

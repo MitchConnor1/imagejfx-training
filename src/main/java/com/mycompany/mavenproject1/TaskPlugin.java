@@ -5,6 +5,7 @@
  */
 package com.mycompany.mavenproject1;
 
+import java.util.List;
 import org.scijava.plugin.SciJavaPlugin;
 
 /**
@@ -15,7 +16,7 @@ import org.scijava.plugin.SciJavaPlugin;
 public interface TaskPlugin extends SciJavaPlugin {
     
     
-    public void  processTask(Task task);
+    public List<Task> processTask(Task task);
     
     
 }

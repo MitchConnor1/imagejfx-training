@@ -5,6 +5,7 @@
  */
 package com.mycompany.mavenproject1;
 
+import java.util.List;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
@@ -20,8 +21,9 @@ public class RemoveTask implements TaskPlugin{
     TaskService task;
         
     @Override
-    public void processTask(Task t) {
+    public List<Task> processTask(Task t) {
         task.removeTask(t);
+        return task.getTaskList();
     }
     
 }

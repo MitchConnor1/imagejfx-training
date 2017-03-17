@@ -15,6 +15,7 @@ public class MainApp extends Application {
        
         SciJava scijava = new SciJava();
         Parent root = new FXMLController();
+        
         scijava.context().inject(root);  
 
         Scene scene = new Scene (root);
