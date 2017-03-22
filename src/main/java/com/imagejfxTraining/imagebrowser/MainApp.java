@@ -5,14 +5,10 @@
  */
 package com.imagejfxTraining.imagebrowser;
 
-import java.io.File;
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Parent;
-
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -22,9 +18,9 @@ import javafx.stage.Stage;
 public class MainApp extends Application {
     
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         
-        Parent root = new BorderPane();
+        Parent root = new FXMLController();
         
         Scene scene = new Scene(root, 300, 250);
         primaryStage.setTitle("Image Browser");

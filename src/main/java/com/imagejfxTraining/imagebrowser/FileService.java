@@ -14,6 +14,12 @@ import org.scijava.service.SciJavaService;
  */
 public interface FileService extends SciJavaService{
     
-    public List<Files> getFilesList();
+    public List<ItemFile> getFilesList();
+    
+    public void updateData(String dirName);
+    
+    public void open (String fileName);
+    
+    public void delete (String filename);
     
 }
