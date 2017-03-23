@@ -6,31 +6,36 @@
 package com.imagejfxTraining.imagebrowser;
 
 import java.io.File;
-import java.io.IOException;
+import org.scijava.Context;
+import org.scijava.event.EventService;
+import org.scijava.plugin.Parameter;
 
 /**
  *
  * @author julien
  */
-public class ImageFile extends File implements ItemFile {
 
+
+public class DirectoryFile extends File implements ItemFile {
+    
     boolean selected;
     
-    public ImageFile(String pathname) {
+
+    @Parameter
+    private FileService fileService;
+            
+    public DirectoryFile(String pathname, Context context) {
         super(pathname);
+        context.inject(this);
     }
 
     @Override
     public void open() {
         
-        try {    
-            Runtime.getRuntime().exec("eog "+ this.getPath());
-        } catch (IOException ex) {
-            ex.getMessage();
-        }
-       
+        fileService.updateData(this.getPath());
     }
 
+    
     @Override
     public boolean isSelected() {
         return selected;

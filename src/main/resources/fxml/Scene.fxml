@@ -9,6 +9,6 @@
       <ListView fx:id="listView" onMouseClicked="#openFile" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
    <top>
-      <TextField fx:id="textField" BorderPane.alignment="CENTER" />
+      <TextField fx:id="textField" onKeyReleased="#onKeyReleased" BorderPane.alignment="CENTER" />
    </top>
 </fx:root>

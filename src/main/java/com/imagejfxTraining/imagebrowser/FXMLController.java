@@ -8,19 +8,25 @@ package com.imagejfxTraining.imagebrowser;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import javafx.scene.layout.BorderPane;
+import org.scijava.Context;
 import org.scijava.SciJava;
+import org.scijava.event.EventHandler;
 import org.scijava.plugin.Parameter;
 
 
@@ -39,23 +45,31 @@ public class FXMLController extends BorderPane {
     @Parameter
     private FileService fileService;
     
-    public FXMLController() throws IOException{
+    public FXMLController(Context context) throws IOException{
         
-    FXMLLoader loader = new FXMLLoader ();
+        context.inject(this);
+        FXMLLoader loader = new FXMLLoader ();
     
-    loader.setLocation(getClass().getResource("/fxml/Scene.fxml"));
-    loader.setRoot(this);
-    loader.setController(this);
-    loader.load();
-    System.out.println("Hello");
-    
-    SciJava scijava = new SciJava();
-    scijava.context().inject(this);
-    listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-    fileService.updateData("/home/julien/Pictures");
-    fileService.getFilesList().forEach((f) -> listView.getItems().add(f.getName()));
-    
+        loader.setLocation(getClass().getResource("/fxml/Scene.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+
+        
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        fileService.updateData("/home/julien/");
     }
+    
+    
+   
+    @EventHandler
+    private void onDataUpdated(UpdateEvent event){
+        Platform.runLater( () -> {
+                listView.getItems().clear();
+                event.getFiles().forEach((f) -> listView.getItems().add(f.getName()));});
+    }
+    
+    
     
     @FXML
     private void openFile(MouseEvent mouseEvent){
@@ -67,20 +81,16 @@ public class FXMLController extends BorderPane {
         }
          
          else if (mouseEvent.getButton().equals(MouseButton.SECONDARY)){
-             ObservableList<String> name = listView.getSelectionModel().getSelectedItems();
-             name.forEach((f) -> fileService.open(f));
+             String name = listView.getSelectionModel().getSelectedItem();
              fileService.delete(name);
          }
-         
-         
+
     }
+
     
-    
-        
+    @FXML 
+    private void onKeyReleased(KeyEvent e){
+        fileService.filter(textField.getText());
+        System.out.println(textField.getText());
+    }
 }
-
-
-
-
-
-

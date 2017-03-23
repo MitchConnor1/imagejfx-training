@@ -7,10 +7,16 @@ package com.imagejfxTraining.imagebrowser;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import org.scijava.event.EventService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.SciJavaService;
@@ -24,49 +30,43 @@ public class DefaultFileService extends AbstractService implements FileService {
     
     
     private final List <ItemFile> filesList = new ArrayList<>();
+    private final List <ItemFile> displayedFiles = new ArrayList<>();
+    
+    @Parameter
+    private EventService eventService;
+    
     
     @Override
     public List<ItemFile> getFilesList() {
+        File test;
         return filesList;
     }
     
     @Override
     public void updateData(String dirName){
-        
         filesList.clear();
         File dir = new File(dirName);
         File[] listOfFiles = dir.listFiles();
         for (File file : listOfFiles) {
             ItemFile item = null;
             if (file.isDirectory())
-                    item = new Directory(file.getPath());
-            else if (isImage(file))
-                    item = new ImageFile (file.getPath());
+                item = new DirectoryFile(file.getPath(), eventService.context());
+            else if (typeOfFile(file).equals("image"))
+                item = new ImageFile (file.getPath());
             if (item != null)
                 filesList.add(item);
         }
+        eventService.publish(new UpdateEvent(filesList));
+        Collection <String> col = new ArrayList <>();
     }
     
-    
-    
-    public static boolean isImage(File file) {
-        try {
-            ImageIO.read(file);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-        
-    }    
-
     @Override
     public void open(String fileName) {
-        filesList.stream()
-                .filter((file) -> (file.getName().equals(fileName)))
-                .forEachOrdered((file) -> {
-                    file.open();
-        });
-    
+
+        List <ItemFile> toOpen = filesList.stream()
+                .filter((file) -> (file.getName().equals(fileName))).collect(Collectors.toList());
+        toOpen.forEach(ItemFile::open);
+        
     }
 
     @Override
@@ -76,4 +76,29 @@ public class DefaultFileService extends AbstractService implements FileService {
                 .collect(Collectors.toList());
         filesList.removeAll(toRemove);
     }
+    
+    private String typeOfFile(File file){
+        
+        String fileType = new String("");
+     
+        try {
+            fileType = Files.probeContentType(file.toPath());
+        } catch (IOException ex) {
+            ex.getMessage();
+        }
+     
+        return (fileType.split("/")[0]);
+    
+    }
+
+    @Override
+    public void filter(String str){
+        
+        List<ItemFile> toRemove = filesList.stream().filter((file) -> (! file.getName().startsWith(str))).collect(Collectors.toList());
+        filesList.removeAll(toRemove);
+        
+        eventService.publish(new UpdateEvent(filesList));
+        
+    }
+    
 }

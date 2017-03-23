@@ -22,4 +22,6 @@ public interface FileService extends SciJavaService{
     
     public void delete (String filename);
     
+    public void filter (String str);
+    
 }
