@@ -9,12 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.imageio.ImageIO;
 import org.scijava.event.EventService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -28,7 +24,7 @@ import org.scijava.service.SciJavaService;
 @Plugin(type=SciJavaService.class, priority=10)
 public class DefaultFileService extends AbstractService implements FileService {
     
-    
+    private File previousFile;
     private final List <ItemFile> filesList = new ArrayList<>();
     private final List <ItemFile> displayedFiles = new ArrayList<>();
     
@@ -42,11 +38,27 @@ public class DefaultFileService extends AbstractService implements FileService {
         return filesList;
     }
     
+    @Override 
+    public File getParent(){
+        return previousFile;
+    }
+    
     @Override
     public void updateData(String dirName){
         filesList.clear();
+        displayedFiles.clear();
+
+        
         File dir = new File(dirName);
+        File parent = new File(dir.getParent());
+        
+        previousFile = parent;
+        
+        ItemFile previous = new DirectoryFile(parent.getPath(), eventService.context());
+       
+        
         File[] listOfFiles = dir.listFiles();
+        
         for (File file : listOfFiles) {
             ItemFile item = null;
             if (file.isDirectory())
@@ -56,8 +68,10 @@ public class DefaultFileService extends AbstractService implements FileService {
             if (item != null)
                 filesList.add(item);
         }
-        eventService.publish(new UpdateEvent(filesList));
-        Collection <String> col = new ArrayList <>();
+        
+        filesList.forEach((t) -> displayedFiles.add(t));
+        filesList.add(previous);
+        eventService.publish(new UpdateEvent(displayedFiles));
     }
     
     @Override
@@ -74,11 +88,14 @@ public class DefaultFileService extends AbstractService implements FileService {
         List <ItemFile> toRemove = filesList.stream().
                 filter((f) -> f.getName().equals(fileName))
                 .collect(Collectors.toList());
-        filesList.removeAll(toRemove);
+        
+        displayedFiles.removeAll(toRemove);
+        
+        eventService.publish(new UpdateEvent (displayedFiles));
+        
     }
     
     private String typeOfFile(File file){
-        
         String fileType = new String("");
      
         try {
@@ -93,11 +110,12 @@ public class DefaultFileService extends AbstractService implements FileService {
 
     @Override
     public void filter(String str){
-        
+        displayedFiles.clear();
+        filesList.forEach((t) -> displayedFiles.add(t));
         List<ItemFile> toRemove = filesList.stream().filter((file) -> (! file.getName().startsWith(str))).collect(Collectors.toList());
-        filesList.removeAll(toRemove);
+        displayedFiles.removeAll(toRemove);
         
-        eventService.publish(new UpdateEvent(filesList));
+        eventService.publish(new UpdateEvent(displayedFiles));
         
     }
     

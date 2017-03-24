@@ -5,6 +5,7 @@
  */
 package com.imagejfxTraining.imagebrowser;
 
+import java.io.File;
 import java.util.List;
 import org.scijava.service.SciJavaService;
 
@@ -23,5 +24,7 @@ public interface FileService extends SciJavaService{
     public void delete (String filename);
     
     public void filter (String str);
+    
+    public File getParent();
     
 }

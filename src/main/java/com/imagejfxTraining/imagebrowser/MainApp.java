@@ -22,7 +22,10 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws IOException {
         SciJava scijava = new SciJava();
         
-        Parent root = new FXMLController(scijava.context());
+        
+//        The first folder in which the user arrives when launching the application
+        String firstFolder = "/home";
+        Parent root = new FXMLController(scijava.context(), firstFolder);
         
         Scene scene = new Scene(root, 1280, 960);
         primaryStage.setTitle("Image Browser");
