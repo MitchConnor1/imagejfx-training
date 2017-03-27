@@ -6,7 +6,10 @@
 package com.mycompany.mavenproject1;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ToolBar;
 import org.scijava.Context;
 import org.scijava.InstantiableException;
@@ -19,14 +22,19 @@ import org.scijava.plugin.PluginService;
  * @author julien
  */
 public class TaskProcessingToolBar extends ToolBar {
-    
+   /**
     @Parameter 
     PluginService pluginService;
 
-    public TaskProcessingToolBar(Context context) {
+    @Parameter
+    Context context;
+    
+    ListView <Task> listView;
+    public TaskProcessingToolBar(Context context, ListView <Task> listView) {
         
 //        The context is injected by the toolbox itself, it will have to wait for the MainApp to inject it to the root
         context.inject(this);
+        this.listView = listView;
         pluginService
 		.getPluginsOfType(TaskPlugin.class)
 		.forEach(this::addPlugin);
@@ -36,28 +44,22 @@ public class TaskProcessingToolBar extends ToolBar {
     
     public void addPlugin(PluginInfo <TaskPlugin> pluginInfo){
         
-        Button button = new Button (pluginInfo.getLabel());
-        
-        TaskPlugin plugin;
-        
         try {
+            Button button = new Button (pluginInfo.getLabel());
+            
+            TaskPlugin plugin;
+            
             plugin = pluginInfo.createInstance();
+            
+            
+            button.setOnAction(actionEvent -> plugin.processTask(listView.getItems(), context));
+            
+            this.getItems().add(button);
         } catch (InstantiableException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(TaskProcessingToolBar.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        button.setOnAction(actionEvent -> applyPlugin (plugin));
-        
-        this.getItems().add(button);
-        
         
     }
-    
-    public void applyPlugin(TaskPlugin plugin){
-        
-        
-        
-    }
-    
-    
+        */
 }

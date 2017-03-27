@@ -7,6 +7,7 @@ package com.mycompany.mavenproject1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.scijava.event.EventService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -25,13 +26,6 @@ public class ToDoTasks extends AbstractService implements TaskService {
 
     private final List <Task> listOfTasks = new ArrayList <>();
     
- 
-//    This method is called after a service has been injected with its dependancies.
-    @Override
-    public void initialize() {
-        addTask("Do something first");
-        addTask("Do something afterwards");
-}
     
     @Override
     public void addTask(String taskContent) {
@@ -54,4 +48,19 @@ public class ToDoTasks extends AbstractService implements TaskService {
         eventService.publish(new TaskDeletedEvent(task));
     }
 
+    @Override
+    public void removeSelectedTasks(List <Task> toRemove){
+        
+        toRemove = toRemove.stream().
+                filter((t) -> t.isSelected())
+                .collect(Collectors.toList());
+        
+        listOfTasks.removeAll(toRemove);
+        
+        toRemove.forEach( (t) -> eventService.publish(new TaskDeletedEvent(t)));
+        
+    }
+    
+    
+    
 }

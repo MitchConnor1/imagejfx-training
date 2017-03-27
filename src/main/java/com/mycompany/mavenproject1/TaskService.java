@@ -20,7 +20,7 @@ public interface TaskService extends SciJavaService {
 
     public void removeTask (Task task);
 
-    
+    public void removeSelectedTasks (List <Task> toRemove);
   
 }
 

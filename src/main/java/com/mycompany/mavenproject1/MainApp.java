@@ -13,10 +13,10 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
        
-        SciJava scijava = new SciJava();
+//        SciJava scijava = new SciJava();
         Parent root = new FXMLController();
         
-        scijava.context().inject(root);  
+//        scijava.context().inject(root);  
 
         Scene scene = new Scene (root);
         primaryStage.setScene (scene);

@@ -9,21 +9,33 @@ import java.util.List;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
+import org.scijava.Context;
+
+
+
+
+
 /**
  *
  * @author julien
  */
 
-@Plugin(type=TaskPlugin.class, label = "Set all task done")
+@Plugin(type=TaskPlugin.class, label = "Remove selected tasks")
 public class RemoveTask implements TaskPlugin{
-
+    
     @Parameter
     TaskService task;
-        
+    
     @Override
-    public List<Task> processTask(Task t) {
+    public void processTask(Task t, Context context) {
+        context.inject (this);
         task.removeTask(t);
-        return task.getTaskList();
+    }
+    
+    public void processTask (List <Task> t, Context context){
+        context.inject(this);
+        task.removeSelectedTasks(t);
+        
     }
     
 }
