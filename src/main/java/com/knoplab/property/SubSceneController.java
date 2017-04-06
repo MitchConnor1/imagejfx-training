@@ -42,7 +42,7 @@ public class SubSceneController extends HBox {
     TextField textField;
     
     @Parameter
-    private FileService fileService;
+    private PropertyExerciseService fileService;
     
     private final ObjectProperty <File> fileProperty = new SimpleObjectProperty();
     
@@ -52,14 +52,16 @@ public class SubSceneController extends HBox {
     
     private final BooleanProperty disabledProperty = new SimpleBooleanProperty();
     
-    
+    public final FileType fileType;
     
     private static final String CHOOSE = "choose";
     private static final String CHANGE = "change";
     
     
-    public SubSceneController(String name, Context context) throws IOException{
+    public SubSceneController(FileType fileType, Context context) throws IOException{
         
+        
+        this.fileType = fileType;
         context.inject(this);
         FXMLLoader loader = new FXMLLoader ();
         
@@ -68,16 +70,13 @@ public class SubSceneController extends HBox {
         loader.setController(this);
         loader.load();
         
-        label.setText(name);
+        label.setText(fileType.getTypeName());
         
         init();
     }
     
     private void init(){
-        
-
-            
-        
+                
         button.textProperty().bind(fileButtonText);
         textField.textProperty().bind(textFieldText);
         button.disableProperty().bind(disabledProperty);
@@ -107,16 +106,18 @@ public class SubSceneController extends HBox {
     @FXML
     public void onButtonClicked(){
         
-        fileService.addFile(label.getText());
+        fileService.addFile(label.getText(), this.fileType);
         
     }
     
     
     @EventHandler
     public void onFileAdded(FileAddedEvent event){
-        if (event.getSource().equals(label.getText()))
-        Platform.runLater( () ->
-        fileProperty.setValue(event.getFile()));
+        if (event.getSource().equals(label.getText())) 
+            Platform.runLater( () -> {
+                fileProperty.setValue(event.getFile());
+        });
+        
         
     }
     
@@ -125,5 +126,8 @@ public class SubSceneController extends HBox {
         
     }
     
+    public BooleanProperty getDisabledProperty(){
+        return disabledProperty;
+    }
     
 }

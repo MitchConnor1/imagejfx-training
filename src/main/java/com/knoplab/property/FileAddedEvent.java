@@ -16,10 +16,13 @@ public class FileAddedEvent extends SciJavaEvent {
     
     private final File file;
     private final String source;
+    private final FileType fileType;
     
-    public FileAddedEvent (File file, String id){
+    
+    public FileAddedEvent (File file, String id, FileType fileType){
         this.file = file;
         this.source = id;
+        this.fileType = fileType;
     }
     
     public File getFile(){
@@ -30,4 +33,7 @@ public class FileAddedEvent extends SciJavaEvent {
         return source;
     }
     
+    public FileType getFileType(){
+        return fileType;
+    }
 }
