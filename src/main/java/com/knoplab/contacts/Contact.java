@@ -23,6 +23,14 @@ public class Contact {
     public Contact(){
         
     }
+
+    public Contact(String name, String mail, String telephone, Image image) {
+        this.name = name;
+        this.mail = mail;
+        this.telephone = telephone;
+        this.image = image;
+    }
+    
     public String getName() {
         return name;
     }

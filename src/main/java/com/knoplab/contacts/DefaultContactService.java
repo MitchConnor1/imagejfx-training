@@ -22,24 +22,18 @@ import org.scijava.service.SciJavaService;
 public class DefaultContactService extends AbstractService implements ContactService {
 
     private final List <Contact> listContact = new ArrayList<>();
-    private static View view;
-    
     
     public void init() throws IOException{
-        
-        view = new ContractDisplayerPane();
         
     }
     @Override
     public void addContact(Contact contact) {
         listContact.add(contact);
-        view.refresh();
     }
 
     @Override
     public void deleteContact(Contact contact) {
         listContact.remove(contact);
-        view.refresh();
         
     }
 

@@ -13,15 +13,11 @@ import javafx.scene.layout.TilePane;
  *
  * @author julien
  */
-public class ContractDisplayerPane extends TilePane implements View  {
+public class ContactDisplayerPane extends TilePane implements View  {
     
-    public ContractDisplayerPane() throws IOException{
+    public ContactDisplayerPane() throws IOException{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(""));
-        loader.setRoot(this);
-        loader.setController(this);
-        loader.load();
-
+        super();
     }
     
     
