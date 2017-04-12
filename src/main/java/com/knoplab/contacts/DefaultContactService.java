@@ -23,12 +23,16 @@ public class DefaultContactService extends AbstractService implements ContactSer
 
     private final List <Contact> listContact = new ArrayList<>();
     
+    
+    
     public void init() throws IOException{
         
     }
+        
     @Override
-    public void addContact(Contact contact) {
-        listContact.add(contact);
+    public void addContact() {
+        
+        
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.scijava.service.SciJavaService;
  */
 public interface ContactService extends SciJavaService {
     
-    public void addContact (Contact contact);
+    public void addContact ();
     public void deleteContact (Contact contact);
     public void editContact(Contact contact, Callable c);
     
